@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="ContentProcessorServerPU" transaction-type="JTA">
+    <jta-data-source>stcav_connection_local</jta-data-source>
+    <class>org.unicauca.stcav.persistence.entities.Chat</class>
+    <class>org.unicauca.stcav.persistence.entities.ComentarioTablon</class>
+    <class>org.unicauca.stcav.persistence.entities.Comunidad</class>
+    <class>org.unicauca.stcav.persistence.entities.ComunidadhasContenido</class>
+    <class>org.unicauca.stcav.persistence.entities.ComunidadhasEtiquetas</class>
+    <class>org.unicauca.stcav.persistence.entities.Contenido</class>
+    <class>org.unicauca.stcav.persistence.entities.ContenidohasEtiquetas</class>
+    <class>org.unicauca.stcav.persistence.entities.Etiquetas</class>
+    <class>org.unicauca.stcav.persistence.entities.Evento</class>
+    <class>org.unicauca.stcav.persistence.entities.InfoAsociada</class>
+    <class>org.unicauca.stcav.persistence.entities.Intereses</class>
+    <class>org.unicauca.stcav.persistence.entities.IntereseshasUsuario</class>
+    <class>org.unicauca.stcav.persistence.entities.Noticia</class>
+    <class>org.unicauca.stcav.persistence.entities.Notificado</class>
+    <class>org.unicauca.stcav.persistence.entities.PreferenciasProgramas</class>
+    <class>org.unicauca.stcav.persistence.entities.Profesion</class>
+    <class>org.unicauca.stcav.persistence.entities.Programa</class>
+    <class>org.unicauca.stcav.persistence.entities.Tablon</class>
+    <class>org.unicauca.stcav.persistence.entities.TipoNoticia</class>
+    <class>org.unicauca.stcav.persistence.entities.Usuario</class>
+    <class>org.unicauca.stcav.persistence.entities.UsuariohasComunidad</class>
+    <class>org.unicauca.stcav.persistence.entities.UsuariohasProfesion</class>
+    <class>org.unicauca.stcav.persistence.entities.Valoracion</class>
+    <class>org.unicauca.stcav.persistence.entities.Votacion</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties/>
+  </persistence-unit>
+</persistence>
