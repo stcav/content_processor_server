@@ -22,3 +22,5 @@ nbdist/
 *.war
 *.ear
 
+# Netbeans web resource files (i.e. data source)
+setup/
