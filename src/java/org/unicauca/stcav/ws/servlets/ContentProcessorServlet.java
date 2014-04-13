@@ -132,7 +132,8 @@ public class ContentProcessorServlet extends HttpServlet {
         } finally {
             //set to response endtime  
             tol.set_end_time();
-            if(!mbai.equals("")){
+            if(!mbai.equals("") && request.getParameter("ignore_metric") == null){
+                System.out.println("--> saving metric");
                 //Setting the counts and time attributes changed of associated MBeanAttributeInfo
                 //Attribute Counts
                 //conteo = (Integer) MBeanServerController.getAttribute(Layout.CONTENTPROCESSORSERVER, Layout.CONTENTRECORD.split(":")[1],"UserContentCounts");
