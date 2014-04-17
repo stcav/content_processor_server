@@ -30,7 +30,7 @@ public class Configurator {
         labelLayout.add(Layout.CONTENTUPLOADING);
         
         RestClient rc = new RestClient();
-        System.out.println(rc.post("http://localhost:19985/ContentProcessorServer/JMXProcessorServlet","data="+labelLayout.toString().replace("[", "").replace("]", "").replace(" ", "")));
+        System.out.println(rc.post("http://localhost:9107/ContentProcessorServer/JMXProcessorServlet","data="+labelLayout.toString().replace("[", "").replace("]", "").replace(" ", "")));
         
     }
 
