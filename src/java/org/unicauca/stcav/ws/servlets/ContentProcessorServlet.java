@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.unicauca.stcav.jmx.InstrumentingController;
+import org.unicauca.stcav.jmx.ManagementAttributeParser;
 import org.unicauca.stcav.jmx.mbean.MBeanServerController;
 import org.unicauca.stcav.jmx.model.MyDynamicMBean;
 import org.unicauca.stcav.model.BackAnswer;
@@ -72,25 +73,30 @@ public class ContentProcessorServlet extends HttpServlet {
         response.setContentType("text/html;charset=iso-8859-1");
         String jsonResponse = null;
         int conteo=0;
-        String mbai="";
-       
+        String managementRecord="";
+        int macroattributeID = 0;
+        int attributeID = 0;
+        System.out.println(request.getParameter("management_record"));
+        if (request.getParameter("management_record")!=null){
+            managementRecord= request.getParameter("management_record");
+            attributeID = Integer.parseInt(managementRecord);
+            macroattributeID = Integer.parseInt(String.valueOf(managementRecord.charAt(0)));
+        }
+        
         switch (Integer.parseInt(request.getParameter("operation"))) {
-            case 0:// Contenidos del usuario
-                mbai="UserContent";                
+            case 0:// Contenidos del usuario            
                 jsonResponse = getContentsByIdUser(Long.parseLong((String) session.getAttribute("idUser")));
                 break;
             case 1:// Contenidos de la comunidad
                 jsonResponse = getContentsByIdComunity(Long.parseLong((String) session.getAttribute("idCom")));
                 break;
             case 2://contenido por ID
-                mbai="ContentPlay";
                 jsonResponse = getContentById(Long.parseLong(request.getParameter("id")));
                 break;
             case 3://contenidos por busqueda asociados a una comunidad
                 jsonResponse = getContentsBySearchInCommunity(Long.parseLong((String) session.getAttribute("idCom")), request.getParameter("token"));
                 break;
             case 4://contenidos por busqueda asociados a un usuario
-                mbai="ContentSearching";
                 jsonResponse = getContentsBySearchFromUser(Long.parseLong((String) session.getAttribute("idUser")), request.getParameter("token"));
                 break;
             case 5://Modificar el contenido (estado,screenshot,duracion) por ID
@@ -103,7 +109,6 @@ public class ContentProcessorServlet extends HttpServlet {
                 jsonResponse = modifyDescriptorContent(request.getParameter("descriptor"), session);
                 break;
             case 8://modificar metainfo del contenido por id
-                mbai="ContentUpgrade";
                 jsonResponse = modifyMetaInfContentById(request.getParameter("titulo"), request.getParameter("sinopsis"), request.getParameter("fuente"), Long.parseLong(request.getParameter("id")));
                 break;
             case 9:// Contenidos del usuario
@@ -132,14 +137,16 @@ public class ContentProcessorServlet extends HttpServlet {
         } finally {
             //set to response endtime  
             tol.set_end_time();
-            if(!mbai.equals("") && request.getParameter("ignore_metric") == null){
+            if(!managementRecord.equals("") && request.getParameter("ignore_metric") == null){
                 System.out.println("--> saving metric");
-                //Setting the counts and time attributes changed of associated MBeanAttributeInfo
-                //Attribute Counts
-                //conteo = (Integer) MBeanServerController.getAttribute(Layout.CONTENTPROCESSORSERVER, Layout.CONTENTRECORD.split(":")[1],"UserContentCounts");
-                //MBeanServerController.changeAttribute(Layout.CONTENTPROCESSORSERVER, Layout.CONTENTRECORD.split(":")[1],mbai+"Counts", String.valueOf(conteo++));
-                //Attribute Time
-                //MBeanServerController.changeAttribute(Layout.CONTENTPROCESSORSERVER, Layout.CONTENTRECORD.split(":")[1],mbai+"Time", String.valueOf(tol.get_tot_()));    
+                ManagementAttributeParser map = ManagementAttributeParser.getInstance();
+                // Setting the counts and time attributes changed of associated MBeanAttributeInfo
+                // Attribute Counts
+                conteo = (Integer) MBeanServerController.getAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, map.getManagementAttributeName(macroattributeID), map.getManagementAttributeName(attributeID)+"Counts");
+                System.out.println("--> "+conteo);
+                MBeanServerController.changeAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, map.getManagementAttributeName(macroattributeID), map.getManagementAttributeName(attributeID)+"Counts", String.valueOf(conteo+1));
+                // Attribute Time
+                MBeanServerController.changeAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, map.getManagementAttributeName(macroattributeID), map.getManagementAttributeName(attributeID)+"Time", String.valueOf(tol.get_tot_()));    
             }
             out.close();
         }
