@@ -34,7 +34,7 @@ public class ManagementAttributeParser {
      public ManagementAttributeParser(){
         InputStream yml = null;
         try {
-            yml = new FileInputStream(new File(System.getProperty("user.dir")+"/src/java/org/unicauca/stcav/res/mb_descriptor.yml"));
+            yml = new FileInputStream(new File(System.getProperty("user.dir")+"/mb_descriptor.yml"));
             Yaml yaml = new Yaml();
             descriptor = (Map<String, String>) yaml.load(yml);
         } catch (FileNotFoundException ex) {
@@ -48,7 +48,7 @@ public class ManagementAttributeParser {
         }
      }
      
-     public String getManagementAttributeName(String key){
+     public String getManagementAttributeName(int key){
          return descriptor.get(key);
      }
     
