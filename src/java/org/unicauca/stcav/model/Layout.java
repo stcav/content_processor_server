@@ -22,6 +22,7 @@ public class Layout {
     public static String PATHMBEANDESCRIPTOR= MAINPATH+"gestv/InstrumentFolder/";
     
     //JMX Server Labels
+    public static String JMXDOMAIN = "MediaServer";
     public static String REFERENCESESSION = "0:ReferenceSession";
     public static String CONTENTEDITING = "3:ContentEditing";
     public static String CONTENTRECORD = "1:ContentRecord";
