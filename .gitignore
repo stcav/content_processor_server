@@ -24,3 +24,6 @@ nbdist/
 
 # Netbeans web resource files (i.e. data source)
 setup/
+
+# Layout
+src/java/org/unicauca/stcav/model/Layout.java 
