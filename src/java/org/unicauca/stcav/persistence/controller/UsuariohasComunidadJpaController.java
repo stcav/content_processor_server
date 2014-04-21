@@ -26,10 +26,10 @@ import org.unicauca.stcav.persistence.entities.UsuariohasComunidadPK;
 public class UsuariohasComunidadJpaController implements Serializable {
 
     public UsuariohasComunidadJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
+        
         this.emf = emf;
     }
-    private UserTransaction utx = null;
+    
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
@@ -42,13 +42,13 @@ public class UsuariohasComunidadJpaController implements Serializable {
         }
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             em.persist(usuariohasComunidad);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -66,13 +66,13 @@ public class UsuariohasComunidadJpaController implements Serializable {
     public void edit(UsuariohasComunidad usuariohasComunidad) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             usuariohasComunidad = em.merge(usuariohasComunidad);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -94,8 +94,8 @@ public class UsuariohasComunidadJpaController implements Serializable {
     public void destroy(UsuariohasComunidadPK id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             UsuariohasComunidad usuariohasComunidad;
             try {
                 usuariohasComunidad = em.getReference(UsuariohasComunidad.class, id);
@@ -104,10 +104,10 @@ public class UsuariohasComunidadJpaController implements Serializable {
                 throw new NonexistentEntityException("The usuariohasComunidad with id " + id + " no longer exists.", enfe);
             }
             em.remove(usuariohasComunidad);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

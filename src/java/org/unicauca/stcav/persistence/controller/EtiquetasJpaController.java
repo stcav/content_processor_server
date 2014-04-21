@@ -24,10 +24,10 @@ import org.unicauca.stcav.persistence.entities.Etiquetas;
 public class EtiquetasJpaController implements Serializable {
 
     public EtiquetasJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
+        
         this.emf = emf;
     }
-    private UserTransaction utx = null;
+    
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
@@ -37,13 +37,13 @@ public class EtiquetasJpaController implements Serializable {
     public void create(Etiquetas etiquetas) throws RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             em.persist(etiquetas);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -58,13 +58,13 @@ public class EtiquetasJpaController implements Serializable {
     public void edit(Etiquetas etiquetas) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             etiquetas = em.merge(etiquetas);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -86,8 +86,8 @@ public class EtiquetasJpaController implements Serializable {
     public void destroy(Long id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             Etiquetas etiquetas;
             try {
                 etiquetas = em.getReference(Etiquetas.class, id);
@@ -96,10 +96,10 @@ public class EtiquetasJpaController implements Serializable {
                 throw new NonexistentEntityException("The etiquetas with id " + id + " no longer exists.", enfe);
             }
             em.remove(etiquetas);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

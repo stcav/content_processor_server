@@ -24,10 +24,10 @@ import org.unicauca.stcav.persistence.entities.Evento;
 public class EventoJpaController implements Serializable {
 
     public EventoJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
+        
         this.emf = emf;
     }
-    private UserTransaction utx = null;
+    
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
@@ -37,13 +37,13 @@ public class EventoJpaController implements Serializable {
     public void create(Evento evento) throws RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             em.persist(evento);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -58,13 +58,13 @@ public class EventoJpaController implements Serializable {
     public void edit(Evento evento) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             evento = em.merge(evento);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -86,8 +86,8 @@ public class EventoJpaController implements Serializable {
     public void destroy(Long id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             Evento evento;
             try {
                 evento = em.getReference(Evento.class, id);
@@ -96,10 +96,10 @@ public class EventoJpaController implements Serializable {
                 throw new NonexistentEntityException("The evento with id " + id + " no longer exists.", enfe);
             }
             em.remove(evento);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }

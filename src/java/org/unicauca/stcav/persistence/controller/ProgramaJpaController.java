@@ -24,10 +24,10 @@ import org.unicauca.stcav.persistence.entities.Programa;
 public class ProgramaJpaController implements Serializable {
 
     public ProgramaJpaController(UserTransaction utx, EntityManagerFactory emf) {
-        this.utx = utx;
+        
         this.emf = emf;
     }
-    private UserTransaction utx = null;
+    
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
@@ -37,13 +37,13 @@ public class ProgramaJpaController implements Serializable {
     public void create(Programa programa) throws RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             em.persist(programa);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -58,13 +58,13 @@ public class ProgramaJpaController implements Serializable {
     public void edit(Programa programa) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             programa = em.merge(programa);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
@@ -86,8 +86,8 @@ public class ProgramaJpaController implements Serializable {
     public void destroy(Long id) throws NonexistentEntityException, RollbackFailureException, Exception {
         EntityManager em = null;
         try {
-            utx.begin();
             em = getEntityManager();
+            em.getTransaction().begin();
             Programa programa;
             try {
                 programa = em.getReference(Programa.class, id);
@@ -96,10 +96,10 @@ public class ProgramaJpaController implements Serializable {
                 throw new NonexistentEntityException("The programa with id " + id + " no longer exists.", enfe);
             }
             em.remove(programa);
-            utx.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
             try {
-                utx.rollback();
+                em.getTransaction().rollback();
             } catch (Exception re) {
                 throw new RollbackFailureException("An error occurred attempting to roll back the transaction.", re);
             }
