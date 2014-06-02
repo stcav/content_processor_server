@@ -10,6 +10,7 @@ import flexjson.JSONSerializer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -82,7 +83,10 @@ public class ContentProcessorServlet extends HttpServlet {
             attributeID = Integer.parseInt(managementRecord);
             macroattributeID = Integer.parseInt(String.valueOf(managementRecord.charAt(0)));
         }
-        
+        Enumeration<String> e =  session.getAttributeNames();
+        while(e.hasMoreElements()){
+            System.err.println("----> " + e.nextElement());
+        }
         switch (Integer.parseInt(request.getParameter("operation"))) {
             case 0:// Contenidos del usuario            
                 jsonResponse = getContentsByIdUser(Long.parseLong((String) session.getAttribute("idUser")));

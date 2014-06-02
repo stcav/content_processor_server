@@ -9,12 +9,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MalformedObjectNameException;
+import javax.management.ReflectionException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.unicauca.stcav.jmx.ManagementAttributeParser;
+import org.unicauca.stcav.jmx.mbean.MBeanServerController;
+import org.unicauca.stcav.model.Layout;
 import org.unicauca.stcav.model.TimeOfLife;
 
 /**
@@ -32,10 +40,11 @@ public class ReferenceServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+    throws ServletException, IOException, MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException, MalformedObjectNameException {
         HttpSession session = request.getSession(true);
         session.setMaxInactiveInterval(-1);
         String res = null;
+        int conteo=0;
         TimeOfLife tol = new TimeOfLife();
         tol.set_home_time();
 
@@ -80,6 +89,14 @@ public class ReferenceServlet extends HttpServlet {
             tol.set_end_time();
             out.println(res);
         } finally { 
+            System.out.println("--> saving metric");
+            // Setting the counts and time attributes changed of associated MBeanAttributeInfo
+            // Attribute Counts
+            conteo = (Integer) MBeanServerController.getAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, "ReferenceSession", "CrossedReferenceCounts");
+            System.out.println("--> "+conteo);
+            MBeanServerController.changeAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, "ReferenceSession", "CrossedReferenceCounts", String.valueOf(conteo+1));
+            // Attribute Time
+            MBeanServerController.changeAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, "ReferenceSession", "CrossedReferenceTime", String.valueOf(tol.get_tot_())); 
             out.close();
         }
     } 
@@ -95,7 +112,19 @@ public class ReferenceServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (MBeanException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AttributeNotFoundException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstanceNotFoundException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ReflectionException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedObjectNameException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     } 
 
     /** 
@@ -108,7 +137,19 @@ public class ReferenceServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (MBeanException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AttributeNotFoundException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstanceNotFoundException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ReflectionException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedObjectNameException ex) {
+            Logger.getLogger(ReferenceServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /** 
