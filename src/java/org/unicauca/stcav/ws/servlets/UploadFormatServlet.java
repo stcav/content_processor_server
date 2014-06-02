@@ -6,7 +6,14 @@ import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Mac;
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MalformedObjectNameException;
+import javax.management.ReflectionException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,9 +23,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.*;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.unicauca.stcav.jmx.mbean.MBeanServerController;
 import org.unicauca.stcav.model.BackAnswer;
 import org.unicauca.stcav.model.BackProcessor;
 import org.unicauca.stcav.model.Layout;
+import org.unicauca.stcav.model.TimeOfLife;
 
 /**
  *
@@ -35,12 +44,15 @@ public class UploadFormatServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, MBeanException, AttributeNotFoundException, InstanceNotFoundException, ReflectionException, MalformedObjectNameException {
         HttpSession session = request.getSession(); 
         response.setContentType("text/html;charset=iso-8859-1");
         PrintWriter out = response.getWriter();
         BackAnswer ba = new BackAnswer();
-
+        TimeOfLife tol = new TimeOfLife();
+        tol.set_home_time();
+        int conteo=0;
+        
         try {
             System.out.println("Comenzamos procesamiento ficheros");
             ba = procesaFicheros(request, out, session);
@@ -53,6 +65,14 @@ public class UploadFormatServlet extends HttpServlet {
                 response.sendRedirect("/nB1e.html");
             }
         } finally {
+            System.out.println("--> saving metric");
+            // Setting the counts and time attributes changed of associated MBeanAttributeInfo
+            // Attribute Counts
+            conteo = (Integer) MBeanServerController.getAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, "ContentUploading", "ContentUploadingCounts");
+            System.out.println("--> "+conteo);
+            MBeanServerController.changeAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, "ContentUploading", "ContentUploadingCounts", String.valueOf(conteo+1));
+            // Attribute Time
+            MBeanServerController.changeAttribute(Layout.JMXDOMAIN, Layout.CONTENTPROCESSORSERVER, "ContentUploading", "ContentUploadingTime", String.valueOf(tol.get_tot_()));
             out.close();
         }
 
@@ -151,7 +171,19 @@ public class UploadFormatServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (MBeanException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AttributeNotFoundException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstanceNotFoundException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ReflectionException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedObjectNameException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -164,7 +196,19 @@ public class UploadFormatServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (MBeanException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AttributeNotFoundException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstanceNotFoundException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ReflectionException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MalformedObjectNameException ex) {
+            Logger.getLogger(UploadFormatServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
