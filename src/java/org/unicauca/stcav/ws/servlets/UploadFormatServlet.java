@@ -65,6 +65,7 @@ public class UploadFormatServlet extends HttpServlet {
                 response.sendRedirect("/nB1e.html");
             }
         } finally {
+            tol.set_end_time();
             System.out.println("--> saving metric");
             // Setting the counts and time attributes changed of associated MBeanAttributeInfo
             // Attribute Counts
